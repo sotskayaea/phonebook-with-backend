@@ -1,12 +1,14 @@
 import { nanoid } from 'nanoid';
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { addContact } from '../../redux/contactsSliceReducer';
+import { useSelector } from 'react-redux';
+import { addContact } from '../../redux/operations';
 import style from './ContactForm.module.css';
+import { useDispatch } from 'react-redux';
 
 const ContactForm = () => {
-  const contacts = useSelector(state => state.contacts);
+  const contacts = useSelector(state => state.contacts.items);
   const dispatch = useDispatch();
+
   const onHandleSubmit = e => {
     e.preventDefault();
     const name = e.currentTarget.elements.name.value;
@@ -14,7 +16,7 @@ const ContactForm = () => {
     const contactData = {
       id: nanoid(),
       name: name,
-      number: number,
+      phone: number,
     };
     const foundContact = contacts.find(
       contact => contact.name === contactData.name
@@ -24,6 +26,7 @@ const ContactForm = () => {
       e.currentTarget.reset();
       return;
     }
+    console.log(contactData);
     dispatch(addContact(contactData));
     e.currentTarget.reset();
   };
@@ -31,25 +34,11 @@ const ContactForm = () => {
     <form onSubmit={onHandleSubmit} className={style.contactForm}>
       <label className={style.label}>
         Name
-        <input
-          type="text"
-          name="name"
-          className={style.input}
-          pattern="^[a-zA-Zа-яА-Я]+([' -][a-zA-Zа-яА-Я]+)*$"
-          title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-          required
-        />
+        <input type="text" name="name" className={style.input} required />
       </label>
       <label className={style.label}>
         Phone
-        <input
-          className={style.input}
-          type="tel"
-          name="number"
-          pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-          title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-          required
-        />
+        <input className={style.input} type="tel" name="number" required />
       </label>
       <button className={style.button} type="submit">
         Add Contact
